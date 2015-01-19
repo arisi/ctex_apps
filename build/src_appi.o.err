@@ -1,0 +1,5 @@
+In file included from ../mygit/arisi/ctex/src/lib/stdio/stdio.h:1:0,
+                 from src/appi.c:3:
+../mygit/arisi/ctex/src/lib/stdio/serial.h:81:5: varoitus: ristiriitaiset tyypit sisäiselle funktiolle ”fputs”
+ int fputs(ports,char*);
+     ^

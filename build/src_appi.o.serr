@@ -1,0 +1,7 @@
+src/appi.c: Funktio ”appi”:
+src/appi.c:40:9: varoitus: alustus tekee osoittimesta kokonaisluvun ilman tyyppimuunnosta
+   int e=&_edata;
+         ^
+src/appi.c:41:9: varoitus: alustus tekee osoittimesta kokonaisluvun ilman tyyppimuunnosta
+   int s=&_sdata;
+         ^
