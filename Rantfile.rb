@@ -16,7 +16,7 @@ incdir_gen=""; libs.each {|d|incdir_gen.concat "-I src/lib/#{d} " }
 depdir_gen=["src/"]
 libs.each { |d|depdir_gen << "src/lib/#{d}" }
 
-kernel="../mygit/arisi/ctex"
+kernel="../ctex"
 
 defines=IO.read("#{kernel}/build/sol_STM32L_mg11/defines")
 includes=IO.read("#{kernel}/build/sol_STM32L_mg11/includes")

@@ -4,4 +4,3 @@
 # WARNING: Modifications to this file will get lost!
 
 gen SourceNode, "src/appi.c" => []
-gen SourceNode, "rtc.h" => []

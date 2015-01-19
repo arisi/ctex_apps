@@ -8,6 +8,6 @@ if [ $1 = "build" ]; then
 fi
 rant -f Rantfile.rb --err-commands  -v CPU=STM32L APP=$2 HW=mg11 2>&1 |tee build/$2_STM32L_mg11/rant.err
 #echo "COMPILED" >>log
-cat build/$2_STM32L_mg11/*.err >build/$2_STM32L_mg11/compile.log
-cat build/$2_STM32L_mg11/*.err
+cat build/*.err >build/$2_STM32L_mg11/compile.log
+cat build/*.err
 #curl 'http://20.20.20.21:8087/demo.json?act=flash'
