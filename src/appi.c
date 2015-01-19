@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 int countti=0;
-extern unsigned int  _sdata,_sidata,_edata,_sbss,_ebss;
+extern unsigned int _sdata,_sidata,_edata,_sbss,_ebss;
 
 void appi_task() {
   if (countti&1)
@@ -26,11 +26,11 @@ int appi_terminal(int argc,char **argv)
 
 
 void init_mem() {
-  memcpy (&_sdata, &_sidata, (void *)&_edata-(void *)&_sdata);
-  memset(&_sbss,0,(void *)&_ebss-(void *)&_sbss);
+  memcpy (&_sdata, &_sidata, (void*)&_edata-(void*)&_sdata);
+  memset(&_sbss,0,(void*)&_ebss-(void*)&_sbss);
 }
 
-int  __attribute__((section("buut"))) appi(int z) {
+int __attribute__((section("buut"))) appi(int z) {
   init_mem();
   printf("Appi initoitu!\n");
   sch_add_task("APPIX", 10000, (void*)&appi_task);
