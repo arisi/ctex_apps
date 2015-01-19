@@ -7,9 +7,9 @@ extern unsigned int _sdata,_sidata,_edata,_sbss,_ebss;
 
 void appi_task() {
   if (countti&1)
-    printf("Appi-taski %d\n",countti);
+    printf("Appi-taski %d TILULII!\n",countti);
   else
-    printf("Appi-taski %d xxxxxxxxx\n",countti);
+    printf("Appi-taski %d zzzzzzyyyyyzzz\n",countti);
   countti+=1;
 }
 
