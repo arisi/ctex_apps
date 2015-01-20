@@ -33,6 +33,7 @@ OptionParser.new do |opts|
   end
 end.parse!
 
+retval=0
 if options[:file]
   syms={}
   puts "Processing #{options[:file]}"
@@ -94,8 +95,12 @@ if options[:file]
       puts "0x#{addr.to_s(16)} #{sym}" if options[:verbose]
     elsif sym[0]!='_'
       puts "Error: Missing #{sym}"
+      retval=-1
     end
   end
   of.close
   puts "Created '#{ofn}'."
+  puts "MISSING SYMBOLS!!!!!!!!!!!" if retval!=0
 end
+
+exit retval

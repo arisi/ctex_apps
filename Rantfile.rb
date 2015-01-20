@@ -4,6 +4,9 @@ import "autoclean"
 import "c/dependencies"
 import "command"
 
+sys.rm_f "bin/appi"
+sys.rm_f "bin/appi.srec"
+
 sys.rm_f "compile.err"
 sys.touch "compile.err"
 
@@ -58,7 +61,6 @@ SRC.each do |source|
   task :link => target
 end
 
-
 ASM.each do |source|
   target = File.join(BUILD_DIR, source.sub(/.S$/, '.o').gsub(/\//,'_'))
     gen Command, target => source do |t|
@@ -67,9 +69,8 @@ ASM.each do |source|
   task :link => target
 end
 
-
-
 task :link  do
+  sys "./elfsyms.rb -v -f ../ctex/bin/sol_STM32L_mg11 |tee >build/elfsyms.err"
   sys  "cd #{BUILD_DIR}; arm-eabi-ld -M -EL --cref -Map mapfile -T ../linker.ld --no-undefined -o ../bin/appi *.o 2>linker.err && arm-eabi-objcopy -O srec ../bin/appi ../bin/appi.srec "
 end
 

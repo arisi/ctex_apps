@@ -9,7 +9,7 @@
   .set my_fprintf,0x8007bdd
   .type stdout,%object
   .global stdout
-  .set stdout,0x2000027d
+  .set stdout,0x20000279
   .type fputs,%function
   .global fputs
   .set fputs,0x8008875

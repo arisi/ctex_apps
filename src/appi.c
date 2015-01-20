@@ -7,9 +7,9 @@ extern unsigned int _sdata,_sidata,_edata,_sbss,_ebss;
 
 void appi_task() {
   if (countti&1)
-    printf("Appi-taski %d TILULII!\n",countti);
+    printf("Appi-taski %d TILULII!!\n",countti);
   else
-    printf("Appi-taski %d zzzzzzyyyyyzzz\n",countti);
+    printf("Appi-taski %d qqqqqq\n",countti);
   countti+=1;
 }
 
@@ -18,25 +18,26 @@ int appi_terminal(int argc,char **argv)
 {
   puts("OUJEE!!\n");
   if (strcmp(argv[0],"stat")==0) {
-    printf("KAIKKI HYVIN!\n");
+    printf("KAIKKI HYVIN!\n"); 
   }
   return(0);
 }
 #endif
 
 
-void init_mem() {
+void init_mem() { 
   memcpy (&_sdata, &_sidata, (void*)&_edata-(void*)&_sdata);
   memset(&_sbss,0,(void*)&_ebss-(void*)&_sbss);
 }
-
+extern xxx();
 int __attribute__((section("buut"))) appi(int z) {
   init_mem();
+  xxx();
   printf("Appi initoitu!\n");
   sch_add_task("APPIX", 10000, (void*)&appi_task);
   #ifdef CONF_TERMINAL
   terminal_add_cmd("appi",0,(void*)&appi_terminal);
   #endif
-  return 0;
+  return 0x123456;
 }
 
