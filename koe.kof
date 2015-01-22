@@ -1,0 +1,5 @@
+printf "moikkas\n"
+int x
+for x in [0..10]
+  puts "yee %d",x
+  
