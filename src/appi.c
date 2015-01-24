@@ -6,6 +6,7 @@
 #include "nrf24.h"
 #include "scheduler.h"
 #include "string.h"
+#include "STM32L_flash.h"
 
 int countti=0;
 extern unsigned int _sdata,_sidata,_edata,_sbss,_ebss;
@@ -80,7 +81,7 @@ void appi_nRF_in_task(int t) {
     spac.h.mac=p3_my_mac;
     spac.h.ip=0x14141415;
     spac.h.proto='U';
-    spac.h.port=8099;
+    spac.h.port=8099; 
     spac.h.len=strlen(buf);
     if (spac.h.len>MAX_P3_PACKET_LEN)
       printf("Error: too long packet\n");
@@ -89,7 +90,7 @@ void appi_nRF_in_task(int t) {
       rbuf_large_push(p3_obuf, &spac);
     }
   }
-  sch_block_task(t, nRF_ibuf);
+  sch_block_task(t, nRF_ibuf); 
 }
 
 #ifdef CONF_TERMINAL
@@ -97,7 +98,11 @@ int appi_terminal(int argc,char **argv)
 {
   puts("Appitermi\n");
   if (strcmp(argv[0],"erase")==0) {
-    
+    unsigned int blk=htoi(argv[1]);
+    int iflash_start=0x8000000;
+    unsigned int a=iflash_start+blk*STM32L_FLASH_BLOCK;  
+    printf("STM32L_erase_blockzzz (%X -> %08X)\n",blk,a);   
+    STM32L_erase_block(blk);
   }
   return(0);
 }
@@ -112,12 +117,14 @@ void init_mem() {
 int __attribute__((section("buut"))) appi(int z) {
   init_mem();
   printf("Appi initoitu!\n");
-  sch_add_task("APPIX", 10000, (void*)&appi_task);
-  sch_add_task("APPI_P3_IN", 1000, (void*)&appi_p3_in_task);
-  sch_add_task("APPI_NRF_IN", 1000, (void*)&appi_nRF_in_task);
+
+  sch_add_task("APP_TICK", 10000, (void*)&appi_task);
+  sch_add_task("APP_P3_IN", 1000, (void*)&appi_p3_in_task); 
+  sch_add_task("APP_NRF_IN", 1000, (void*)&appi_nRF_in_task);
+  return 0;
   #ifdef CONF_TERMINAL
   terminal_add_cmd("appi",0,(void*)&appi_terminal);
   #endif
-  return 0x123456;
+  return 0x123456; 
 }
 
