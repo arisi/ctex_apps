@@ -12,7 +12,7 @@ extern unsigned int _sdata,_sidata,_edata,_sbss,_ebss;
 void appi_task() {
   printf("Appi-taski %d\n",countti);
   countti+=1;
-} 
+}
 
 void appi_p3_in_task(int t) {
   int i=rbuf_items(p3_ibuf);
@@ -23,13 +23,13 @@ void appi_p3_in_task(int t) {
     for (int i=0; i<pac.h.len; i++)
       printf("%02X ",pac.buf[i]);
     printf("\n");
-    for (int i=0; i<pac.h.len; i++)  
+    for (int i=0; i<pac.h.len; i++)
       printf("%c",pac.buf[i]);
-    printf("\n");  
+    printf("\n");
 
     if (strcmp(pac.buf,"ping")==0) {
       puts("HEY, ITS PING FROM MASTER\n");
-     }
+    }
     if (strncmp(pac.buf,"s",1)==0) {
       nRF_q_t spac;
       spac.mac=p3_my_mac;
@@ -38,7 +38,7 @@ void appi_p3_in_task(int t) {
       sprintf(spac.buf,"p3>%s",pac.buf);
       rbuf_large_push(nRF_obuf, &spac);
       printf("Sent some!\n");
-    } else if (strcmp(pac.buf,"clear\n")==0) { 
+    } else if (strcmp(pac.buf,"clear\n")==0) {
       nRF_flush();
       printf("Cleared \n");
     }
@@ -48,7 +48,7 @@ void appi_p3_in_task(int t) {
 
 void appi_nRF_in_task(int t) {
   int i=rbuf_items(nRF_ibuf);
-  if (i) { 
+  if (i) {
     nRF_q_t pac;
     rbuf_large_pull(nRF_ibuf,&pac);
     printf("APPI-nRF24 in (mac=%04X, pipe=%d):",pac.mac,pac.pipe);
@@ -78,7 +78,7 @@ int appi_terminal(int argc,char **argv)
 {
   puts("OUJEE!!\n");
   if (strcmp(argv[0],"stat")==0) {
-    printf("KAIKKI HYVIN!\n");   
+    printf("KAIKKI HYVIN!\n");
   }
   return(0);
 }
@@ -88,7 +88,7 @@ int appi_terminal(int argc,char **argv)
 void init_mem() {
   memcpy (&_sdata, &_sidata, (void*)&_edata-(void*)&_sdata);
   memset(&_sbss,0,(void*)&_ebss-(void*)&_sbss);
-} 
+}
 
 int __attribute__((section("buut"))) appi(int z) {
   init_mem();
@@ -100,5 +100,5 @@ int __attribute__((section("buut"))) appi(int z) {
   terminal_add_cmd("appi",0,(void*)&appi_terminal);
   #endif
   return 0x123456;
-} 
+}
 
