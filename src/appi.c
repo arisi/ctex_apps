@@ -5,6 +5,7 @@
 #include "p3.h"
 #include "nrf24.h"
 #include "scheduler.h"
+#include "string.h"
 
 int countti=0;
 extern unsigned int _sdata,_sidata,_edata,_sbss,_ebss;
@@ -12,6 +13,23 @@ extern unsigned int _sdata,_sidata,_edata,_sbss,_ebss;
 void appi_task() {
   printf("Appi-taski %d\n",countti);
   countti+=1;
+}
+
+int appi_p3_send(char *buf) {
+  p3_t spac;
+  spac.h.mac=p3_my_mac;
+  spac.h.ip=0x14141415;
+  spac.h.proto='U';
+  spac.h.port=8099;
+  spac.h.len=strlen(buf);
+  if (spac.h.len>MAX_P3_PACKET_LEN) {
+    printf("Error: too long packet\n");
+    return -1;
+  } else {
+    strncpy(spac.buf,buf,spac.h.len);
+    rbuf_large_push(p3_obuf, &spac);
+  }
+  return 0;
 }
 
 void appi_p3_in_task(int t) {
@@ -27,8 +45,9 @@ void appi_p3_in_task(int t) {
       printf("%c",pac.buf[i]);
     printf("\n");
 
-    if (strcmp(pac.buf,"ping")==0) {
+    if (strncmp(pac.buf,"ping",4)==0) {
       puts("HEY, ITS PING FROM MASTER\n");
+      appi_p3_send("PONG ITELLES\n");
     }
     if (strncmp(pac.buf,"s",1)==0) {
       nRF_q_t spac;
@@ -76,9 +95,9 @@ void appi_nRF_in_task(int t) {
 #ifdef CONF_TERMINAL
 int appi_terminal(int argc,char **argv)
 {
-  puts("OUJEE!!\n");
-  if (strcmp(argv[0],"stat")==0) {
-    printf("KAIKKI HYVIN!\n");
+  puts("Appitermi\n");
+  if (strcmp(argv[0],"erase")==0) {
+    
   }
   return(0);
 }
