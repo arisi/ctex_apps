@@ -6,25 +6,64 @@
 
   .type my_fprintf,%function
   .global my_fprintf
-  .set my_fprintf,0x8007bdd
+  .set my_fprintf,0x8007a35
   .type stdout,%object
   .global stdout
-  .set stdout,0x20000279
+  .set stdout,0x20000260
   .type fputs,%function
   .global fputs
-  .set fputs,0x8008875
+  .set fputs,0x8008699
   .type strcmp,%function
   .global strcmp
-  .set strcmp,0x8009fb5
-  .type memcpy,%function
-  .global memcpy
-  .set memcpy,0x8009e81
+  .set strcmp,0x8009dad
+  .type rbuf_items,%function
+  .global rbuf_items
+  .set rbuf_items,0x8007c15
+  .type rbuf_large_pull,%function
+  .global rbuf_large_pull
+  .set rbuf_large_pull,0x8007cb5
   .type memset,%function
   .global memset
-  .set memset,0x8009e9d
+  .set memset,0x8009c95
+  .type my_sprintf,%function
+  .global my_sprintf
+  .set my_sprintf,0x8007a59
+  .type rbuf_large_push,%function
+  .global rbuf_large_push
+  .set rbuf_large_push,0x8007f05
+  .type nRF_flush,%function
+  .global nRF_flush
+  .set nRF_flush,0x8006509
+  .type sch_block_task,%function
+  .global sch_block_task
+  .set sch_block_task,0x800a661
+  .type p3_ibuf,%object
+  .global p3_ibuf
+  .set p3_ibuf,0x20000424
+  .type p3_my_mac,%object
+  .global p3_my_mac
+  .set p3_my_mac,0x20000210
+  .type nRF_obuf,%object
+  .global nRF_obuf
+  .set nRF_obuf,0x20000418
+  .type strlen,%function
+  .global strlen
+  .set strlen,0x8009cad
+  .type memcpy,%function
+  .global memcpy
+  .set memcpy,0x8009c79
+  .type nRF_ibuf,%object
+  .global nRF_ibuf
+  .set nRF_ibuf,0x20000414
+  .type a,%object
+  .global a
+  .set a,0x200019c4
+  .type p3_obuf,%object
+  .global p3_obuf
+  .set p3_obuf,0x20000420
   .type sch_add_task,%function
   .global sch_add_task
-  .set sch_add_task,0x800a781
+  .set sch_add_task,0x800a579
   .type terminal_add_cmd,%function
   .global terminal_add_cmd
-  .set terminal_add_cmd,0x800ad11
+  .set terminal_add_cmd,0x800ab09

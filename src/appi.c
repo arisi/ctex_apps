@@ -1,16 +1,76 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "rbuf.h"
+#include "p3.h"
+#include "nrf24.h"
+#include "scheduler.h"
 
 int countti=0;
 extern unsigned int _sdata,_sidata,_edata,_sbss,_ebss;
 
 void appi_task() {
-  if (countti&1)
-    printf("Appi-taski %d xxxxxxx!!\n",countti);
-  else
-    printf("Appi-taski %d uuuu\n",countti);
+  printf("Appi-taski %d\n",countti);
   countti+=1;
+} 
+
+void appi_p3_in_task(int t) {
+  int i=rbuf_items(p3_ibuf);
+  if (i) {
+    p3_t pac;
+    rbuf_large_pull(p3_ibuf,&pac);
+    printf("APP-p3 in (mac=%04X, ip=%08X, port=%d,proto=%c):",pac.h.mac,pac.h.ip,pac.h.port,pac.h.proto);
+    for (int i=0; i<pac.h.len; i++)
+      printf("%02X ",pac.buf[i]);
+    printf("\n");
+    for (int i=0; i<pac.h.len; i++)  
+      printf("%c",pac.buf[i]);
+    printf("\n");  
+
+    if (strcmp(pac.buf,"ping")==0) {
+      puts("HEY, ITS PING FROM MASTER\n");
+     }
+    if (strncmp(pac.buf,"s",1)==0) {
+      nRF_q_t spac;
+      spac.mac=p3_my_mac;
+      spac.pipe=0;
+      memset(spac.buf,0,sizeof(spac.buf));
+      sprintf(spac.buf,"p3>%s",pac.buf);
+      rbuf_large_push(nRF_obuf, &spac);
+      printf("Sent some!\n");
+    } else if (strcmp(pac.buf,"clear\n")==0) { 
+      nRF_flush();
+      printf("Cleared \n");
+    }
+  }
+  sch_block_task(t, p3_ibuf);
+}
+
+void appi_nRF_in_task(int t) {
+  int i=rbuf_items(nRF_ibuf);
+  if (i) { 
+    nRF_q_t pac;
+    rbuf_large_pull(nRF_ibuf,&pac);
+    printf("APPI-nRF24 in (mac=%04X, pipe=%d):",pac.mac,pac.pipe);
+    for (int i=0; i<sizeof(pac.buf); i++)
+      printf("%02X ",pac.buf[i]);
+    printf("\n");
+    char buf[20];
+    sprintf(buf,"%d: nRF24 in (mac=%04X, pipe=%d):\n",a,pac.mac,pac.pipe);
+    p3_t spac;
+    spac.h.mac=p3_my_mac;
+    spac.h.ip=0x14141415;
+    spac.h.proto='U';
+    spac.h.port=8099;
+    spac.h.len=strlen(buf);
+    if (spac.h.len>MAX_P3_PACKET_LEN)
+      printf("Error: too long packet\n");
+    else {
+      memcpy(spac.buf,buf,spac.h.len);
+      rbuf_large_push(p3_obuf, &spac);
+    }
+  }
+  sch_block_task(t, nRF_ibuf);
 }
 
 #ifdef CONF_TERMINAL
@@ -18,7 +78,7 @@ int appi_terminal(int argc,char **argv)
 {
   puts("OUJEE!!\n");
   if (strcmp(argv[0],"stat")==0) {
-    printf("KAIKKI HYVIN!\n");
+    printf("KAIKKI HYVIN!\n");   
   }
   return(0);
 }
@@ -28,15 +88,17 @@ int appi_terminal(int argc,char **argv)
 void init_mem() {
   memcpy (&_sdata, &_sidata, (void*)&_edata-(void*)&_sdata);
   memset(&_sbss,0,(void*)&_ebss-(void*)&_sbss);
-}
+} 
 
 int __attribute__((section("buut"))) appi(int z) {
-  init_mem(); 
+  init_mem();
   printf("Appi initoitu!\n");
   sch_add_task("APPIX", 10000, (void*)&appi_task);
+  sch_add_task("APPI_P3_IN", 1000, (void*)&appi_p3_in_task);
+  sch_add_task("APPI_NRF_IN", 1000, (void*)&appi_nRF_in_task);
   #ifdef CONF_TERMINAL
   terminal_add_cmd("appi",0,(void*)&appi_terminal);
   #endif
   return 0x123456;
-}
+} 
 

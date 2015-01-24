@@ -66,7 +66,7 @@ ASM.each do |source|
     gen Command, target => source do |t|
       "arm-eabi-as -c -o #{t.name}  #{t.source}"
     end
-  task :link => target
+  task :link => target 
 end
 
 task :link  do

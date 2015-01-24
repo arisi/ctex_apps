@@ -80,19 +80,21 @@ if options[:file]
   .section stub\n\n"
   req.each do |sym|
     if syms[sym]
-      addr=syms[sym][:addr]+1
+      addr=syms[sym][:addr]
       if syms[sym][:type]=='F'
         of.write "  .type #{sym},%function\n"
         of.write "  .global #{sym}\n"
-        of.write "  .set #{sym},0x#{addr.to_s(16)}\n"
+        of.write "  .set #{sym},0x#{(addr+1).to_s(16)}\n"
+        puts "FUN 0x#{(addr+1).to_s(16)} #{sym}" if options[:verbose]
+
 #        of.write "#{sym}:\n"
 #        of.write "   b 0x#{addr.to_s(16)}\n\n"
       else
         of.write "  .type #{sym},%object\n"
         of.write "  .global #{sym}\n"
         of.write "  .set #{sym},0x#{addr.to_s(16)}\n"
+        puts "VAR 0x#{addr.to_s(16)} #{sym}" if options[:verbose]
       end
-      puts "0x#{addr.to_s(16)} #{sym}" if options[:verbose]
     elsif sym[0]!='_'
       puts "Error: Missing #{sym}"
       retval=-1
