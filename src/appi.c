@@ -100,10 +100,10 @@ int appi_do_low(char *buf, char *outbuf) {
     for (int i=0; i<len; i++)
       sprintf(&outbuf[strlen(outbuf)],"%02X",p[i]);
     for (int i=2; i<strlen(outbuf); i+=2) {
-        unsigned char val=htoin(&outbuf[i],2);
-        checksum+=val;
-        printf(">> %02X -> %04X\n",val,checksum);
-      };
+      unsigned char val=htoin(&outbuf[i],2);
+      checksum+=val;
+      printf(">> %02X -> %04X\n",val,checksum);
+    };
     sprintf(&outbuf[strlen(outbuf)],"%02X",0xff&(~(checksum&0xff)));
     break;
   case 'S':
@@ -113,8 +113,8 @@ int appi_do_low(char *buf, char *outbuf) {
     if (buf[1]=='3') {
       p=(void*)htoin(&buf[4],8);
       int len=htoin(&buf[2],2)-5;       // 4 for addressa, 1 for checksun, rest is data
-      unsigned int checksum=htoin(&buf[12+len*2],2);       
-      unsigned int cchecksum=0;        
+      unsigned int checksum=htoin(&buf[12+len*2],2);
+      unsigned int cchecksum=0;
       for (int i=2; i<strlen(buf)-2; i+=2) {
         unsigned char val=htoin(&buf[i],2);
         cchecksum+=val;
@@ -123,7 +123,7 @@ int appi_do_low(char *buf, char *outbuf) {
       if (checksum!=cchecksum) {
         printf("Checksum Mismatch: %02X != %02X\n",checksum,cchecksum);
         return -1;
-      }    
+      }
       if (((int)p)&0x03) {
         printf("Error: Flash Address must by word-aligned\n");
         return -1;
