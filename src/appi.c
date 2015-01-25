@@ -92,7 +92,8 @@ int appi_do_low(char *buf, char *outbuf) {
     for (int i=0; i<16; i++)
       sprintf(&outbuf[strlen(outbuf)],"%02X ",p[i]);
     break;
-  case 'S': {
+  case 'S': 
+    {
     //S30D0801F1088DF8453014238DF83A
     //01234567890123456
     if (buf[1]=='3') {
@@ -121,8 +122,7 @@ int appi_do_low(char *buf, char *outbuf) {
       for (i=0; i<len; i++) {
         sprintf(&outbuf[strlen(outbuf)],"%02X ",p[i]);
       }
-    }
-    break;
+    } break;
   }
   }
   printf("done low '%s'\n",outbuf);
