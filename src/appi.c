@@ -49,15 +49,15 @@ int appi_do_low(char *buf, char *outbuf) {
   strcpy(outbuf,"?");
   unsigned char *p;
   switch (buf[0]) {
-    case 'P':
-      sprintf(outbuf,"pong!");
-      break;
-    case 'R':
-      p=(void*)htoi(&buf[1]); 
-      sprintf(outbuf,"%08X:",p);
-      for (int i=0;i<4;i++)
-        sprintf(&outbuf[strlen(outbuf)],"%02X ",p[i]);
-      break;
+  case 'P':
+    sprintf(outbuf,"pong!");
+    break;
+  case 'R':
+    p=(void*)htoi(&buf[1]);
+    sprintf(outbuf,"%08X:",p);
+    for (int i=0; i<4; i++)
+      sprintf(&outbuf[strlen(outbuf)],"%02X ",p[i]);
+    break;
   }
   printf("done low '%s'\n",outbuf);
   return 0;
@@ -115,7 +115,7 @@ void appi_nRF_in_task(int t) {
 int STM32L_write_block(unsigned int blk,char *buf,unsigned int len)
 {
   unsigned int a=0x8000000+blk*STM32L_FLASH_BLOCK;
-  STM32L_write(a,buf,len); 
+  STM32L_write(a,buf,len);
   return(0);
 }
 
