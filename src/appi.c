@@ -93,40 +93,41 @@ int appi_do_low(char *buf, char *outbuf) {
       sprintf(&outbuf[strlen(outbuf)],"%02X ",p[i]);
     break;
   case 'S': {
-    //S30D0801F1088DF8453014238DF83A
-    //01234567890123456
-    if (buf[1]=='3') {
-      p=(void*)htoin(&buf[4],8);
-      int len=htoin(&buf[2],2)-5;   // 4 for addressa, 1 for checksun, rest is data
-      if (((int)p)&0x03) {
-        printf("Error: Flash Address must by word-aligned\n");
-        return -1;
-      }
-      if (len>16) {
-        printf("Error: Flash block too long %d\n",len);
-        return -1;
-      }
-      sprintf(outbuf,"F:%08X:%d:",p,len);
-      char fbuf[16];
-      int i;
-      for (i=0; i<16; i++)
-        fbuf[i]=p[i];   // pick old values ;)
-      for (i=0; i<len; i++) {
-        char val=htoin(&buf[12+i*2],2);
-        fbuf[i]=val;
-        printf("Flashing %d\n",len);
+      //S30D0801F1088DF8453014238DF83A
+      //01234567890123456
+      if (buf[1]=='3') {
+        p=(void*)htoin(&buf[4],8);
+        int len=htoin(&buf[2],2)-5;   // 4 for addressa, 1 for checksun, rest is data
+        if (((int)p)&0x03) {
+          printf("Error: Flash Address must by word-aligned\n");
+          return -1;
+        }
+        if (len>16) {
+          printf("Error: Flash block too long %d\n",len);
+          return -1;
+        }
+        sprintf(outbuf,"F:%08X:%d:",p,len);
+        char fbuf[16];
+        int i;
+        for (i=0; i<16; i++)
+          fbuf[i]=p[i];   // pick old values ;)
+        for (i=0; i<len; i++) {
+          char val=htoin(&buf[12+i*2],2);
+          fbuf[i]=val;
+          printf("Flashing %d\n",len);
+  
+        }
         STM32L_write((int)p,fbuf,len);
         for (i=0; i<len; i++) {
           sprintf(&outbuf[strlen(outbuf)],"%02X ",p[i]);
         }
-
       }
+      break;
     }
-    break;
   }
-    printf("done low '%s'\n",outbuf);
-    return 0;
-} 
+  printf("done low '%s'\n",outbuf);
+  return 0;
+}
 
 
   void appi_p3_in_task(int t) {
