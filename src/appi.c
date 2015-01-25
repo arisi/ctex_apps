@@ -45,6 +45,34 @@ int appi_p3_send(char proto,unsigned int ip,unsigned int port,char *buf) {
   return 0;
 }
 
+unsigned int htoin (const char *ptr, int max)
+{
+  if (!ptr)
+    return 0;
+
+  unsigned int value = 0;
+  char ch = *ptr;
+
+  while (ch == ' ' || ch == '\t')
+    ch = *(++ptr);
+
+  for (int cnt=0;cnt<max;cnt++ )
+  {
+    if (ch >= '0' && ch <= '9')
+      value = (value<<4)+(ch-'0');
+    else if (ch >= 'A' && ch <= 'F')
+      value = (value<<4)+(ch-'A'+10);
+    else if (ch >= 'a' && ch <= 'f')
+      value = (value<<4)+(ch-'a'+10);
+    else
+      return value;
+    ch = *(++ptr);
+  }
+  return value;
+}
+
+
+
 int appi_do_low(char *buf, char *outbuf) {
   strcpy(outbuf,"?");
   unsigned char *p;
@@ -52,11 +80,49 @@ int appi_do_low(char *buf, char *outbuf) {
   case 'P':
     sprintf(outbuf,"pong!");
     break;
+  case 'E':
+    p=(void*)htoi(&buf[1]);
+    unsigned int blk=((unsigned int)(p-0x8000000))/STM32L_FLASH_BLOCK;
+    sprintf(outbuf,"E:%08X:%06X",p,blk);
+    STM32L_erase_block(blk);
+    break;
   case 'R':
     p=(void*)htoi(&buf[1]);
-    sprintf(outbuf,"%08X:",p);
-    for (int i=0; i<4; i++)
+    sprintf(outbuf,"R:%08X:",p);
+    for (int i=0; i<16; i++)
       sprintf(&outbuf[strlen(outbuf)],"%02X ",p[i]);
+    break;
+  case 'S': 
+    {
+      //S30D0801F1088DF8453014238DF83A
+      //01234567890123456
+      if (buf[1]=='3') {
+        p=(void*)htoin(&buf[4],8);
+        int len=htoin(&buf[2],2)-5; // 4 for addressa, 1 for checksun, rest is data
+        if (((int)p)&0x03) {
+          printf("Error: Flash Address must by word-aligned\n");
+          return -1;
+        }
+        if (len>16) {
+          printf("Error: Flash block too long %d\n",len);
+          return -1;
+        }
+        sprintf(outbuf,"F:%08X:%d:",p,len);
+        char fbuf[16];
+        int i;
+        for (i=0; i<16; i++) 
+          fbuf[i]=p[i]; // pick old values ;) 
+        for (i=0; i<len; i++) {
+          char val=htoin(&buf[12+i*2],2);
+          fbuf[i]=val;
+        printf("Flashing %d\n",len);
+        STM32L_write((int)p,fbuf,len);
+        for (i=0; i<len; i++) {
+          sprintf(&outbuf[strlen(outbuf)],"%02X ",p[i]);
+        }
+
+      }
+    }
     break;
   }
   printf("done low '%s'\n",outbuf);
@@ -77,9 +143,12 @@ void appi_p3_in_task(int t) {
       printf("%c",pac.buf[i]);
     printf("\n");
 
-    char outbuf[50];
+    char outbuf[150];
     appi_do_low(pac.buf,outbuf);
-    appi_p3_send(pac.h.proto,pac.h.ip,pac.h.port,outbuf);
+    if (appi_p3_send(pac.h.proto,pac.h.ip,pac.h.port,outbuf)) {
+      // send failed
+      appi_p3_send(pac.h.proto,pac.h.ip,pac.h.port,"Error!");
+    }
   }
   sch_block_task(t, p3_ibuf);
 }

@@ -71,7 +71,7 @@ end
 
 task :link  do
   sys "./elfsyms.rb -v -f ../ctex/bin/sol_STM32L_mg11 |tee >build/elfsyms.err"
-  sys  "cd #{BUILD_DIR}; arm-eabi-ld -M -EL --cref -Map mapfile -T ../linker.ld --no-undefined -o ../bin/appi *.o 2>linker.err && arm-eabi-objcopy -O srec ../bin/appi ../bin/appi.srec "
+  sys  "cd #{BUILD_DIR}; arm-eabi-ld -M -EL --cref -Map mapfile -T ../linker.ld --no-undefined -o ../bin/appi *.o 2>linker.err && arm-eabi-objcopy -O srec --srec-len 8  ../bin/appi ../bin/appi.srec "
 end
 
 require "pp"

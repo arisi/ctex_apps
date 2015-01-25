@@ -55,21 +55,21 @@
   .type htoi,%function
   .global htoi
   .set htoi,0x8009c2d
-  .type p3_ibuf,%object
-  .global p3_ibuf
-  .set p3_ibuf,0x20000424
+  .type STM32L_erase_block,%function
+  .global STM32L_erase_block
+  .set STM32L_erase_block,0x8004a35
   .type STM32L_write,%function
   .global STM32L_write
   .set STM32L_write,0x8004a71
+  .type p3_ibuf,%object
+  .global p3_ibuf
+  .set p3_ibuf,0x20000424
   .type fputs,%function
   .global fputs
   .set fputs,0x8008481
   .type strcmp,%function
   .global strcmp
   .set strcmp,0x8009b95
-  .type STM32L_erase_block,%function
-  .global STM32L_erase_block
-  .set STM32L_erase_block,0x8004a35
   .type sch_add_task,%function
   .global sch_add_task
   .set sch_add_task,0x800a361
