@@ -6,31 +6,31 @@
 
   .type my_fprintf,%function
   .global my_fprintf
-  .set my_fprintf,0x800782d
+  .set my_fprintf,0x800781d
   .type stdout,%object
   .global stdout
   .set stdout,0x20000260
   .type rbuf_items,%function
   .global rbuf_items
-  .set rbuf_items,0x8007a0d
+  .set rbuf_items,0x80079fd
   .type rbuf_large_pull,%function
   .global rbuf_large_pull
-  .set rbuf_large_pull,0x8007aad
+  .set rbuf_large_pull,0x8007a9d
   .type my_sprintf,%function
   .global my_sprintf
-  .set my_sprintf,0x8007851
+  .set my_sprintf,0x8007841
   .type strlen,%function
   .global strlen
-  .set strlen,0x8009aa5
+  .set strlen,0x8009a95
   .type memcpy,%function
   .global memcpy
-  .set memcpy,0x8009a71
+  .set memcpy,0x8009a61
   .type rbuf_large_push,%function
   .global rbuf_large_push
-  .set rbuf_large_push,0x8007cfd
+  .set rbuf_large_push,0x8007ced
   .type sch_block_task,%function
   .global sch_block_task
-  .set sch_block_task,0x800a459
+  .set sch_block_task,0x800a449
   .type nRF_ibuf,%object
   .global nRF_ibuf
   .set nRF_ibuf,0x20000414
@@ -43,36 +43,36 @@
   .type p3_obuf,%object
   .global p3_obuf
   .set p3_obuf,0x20000420
-  .type strncpy,%function
-  .global strncpy
-  .set strncpy,0x8009abd
-  .type strncmp,%function
-  .global strncmp
-  .set strncmp,0x8009b3d
-  .type fputs,%function
-  .global fputs
-  .set fputs,0x8008491
   .type memset,%function
   .global memset
-  .set memset,0x8009a8d
-  .type strcmp,%function
-  .global strcmp
-  .set strcmp,0x8009ba5
-  .type nRF_flush,%function
-  .global nRF_flush
-  .set nRF_flush,0x8006615
-  .type p3_ibuf,%object
-  .global p3_ibuf
-  .set p3_ibuf,0x20000424
+  .set memset,0x8009a7d
   .type nRF_obuf,%object
   .global nRF_obuf
   .set nRF_obuf,0x20000418
+  .type strncpy,%function
+  .global strncpy
+  .set strncpy,0x8009aad
   .type htoi,%function
   .global htoi
-  .set htoi,0x8009c3d
+  .set htoi,0x8009c2d
+  .type p3_ibuf,%object
+  .global p3_ibuf
+  .set p3_ibuf,0x20000424
+  .type STM32L_write,%function
+  .global STM32L_write
+  .set STM32L_write,0x8004a71
+  .type fputs,%function
+  .global fputs
+  .set fputs,0x8008481
+  .type strcmp,%function
+  .global strcmp
+  .set strcmp,0x8009b95
   .type STM32L_erase_block,%function
   .global STM32L_erase_block
   .set STM32L_erase_block,0x8004a35
   .type sch_add_task,%function
   .global sch_add_task
-  .set sch_add_task,0x800a371
+  .set sch_add_task,0x800a361
+  .type terminal_add_cmd,%function
+  .global terminal_add_cmd
+  .set terminal_add_cmd,0x800a8f1
