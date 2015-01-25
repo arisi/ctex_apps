@@ -87,18 +87,43 @@ int appi_do_low(char *buf, char *outbuf) {
     STM32L_erase_block(blk);
     break;
   case 'R':
-    p=(void*)htoi(&buf[1]);
-    sprintf(outbuf,"R:%08X:",p);
-    for (int i=0; i<16; i++)
-      sprintf(&outbuf[strlen(outbuf)],"%02X ",p[i]);
+    if (strlen(buf)<10) {
+      printf("Error: too short args\n");
+      return -1;
+    }
+    unsigned int checksum=0;
+    p=(void*)htoin(&buf[1],8);
+    unsigned int len=htoi(&buf[9]);
+    if (len>16)
+      len=16;
+    sprintf(outbuf,"S3%02X%08X",len+5,p);
+    for (int i=0; i<len; i++)
+      sprintf(&outbuf[strlen(outbuf)],"%02X",p[i]);
+    for (int i=2; i<strlen(outbuf); i+=2) {
+        unsigned char val=htoin(&outbuf[i],2);
+        checksum+=val;
+        printf(">> %02X -> %04X\n",val,checksum);
+      };
+    sprintf(&outbuf[strlen(outbuf)],"%02X",0xff&(~(checksum&0xff)));
     break;
   case 'S':
-  
     //S30D0801F1088DF8453014238DF83A
+    //S30D0801E1088DF8453014238DF84A
     //01234567890123456
     if (buf[1]=='3') {
       p=(void*)htoin(&buf[4],8);
       int len=htoin(&buf[2],2)-5;       // 4 for addressa, 1 for checksun, rest is data
+      unsigned int checksum=htoin(&buf[12+len*2],2);       
+      unsigned int cchecksum=0;        
+      for (int i=2; i<strlen(buf)-2; i+=2) {
+        unsigned char val=htoin(&buf[i],2);
+        cchecksum+=val;
+      };
+      cchecksum=0xff&(~(cchecksum&0xff));
+      if (checksum!=cchecksum) {
+        printf("Checksum Mismatch: %02X != %02X\n",checksum,cchecksum);
+        return -1;
+      }    
       if (((int)p)&0x03) {
         printf("Error: Flash Address must by word-aligned\n");
         return -1;
@@ -115,16 +140,13 @@ int appi_do_low(char *buf, char *outbuf) {
       for (i=0; i<len; i++) {
         char val=htoin(&buf[12+i*2],2);
         fbuf[i]=val;
-        printf("Flashing %d\n",len);
-
-      }
+      };
       STM32L_write((int)p,fbuf,len);
       for (i=0; i<len; i++) {
         sprintf(&outbuf[strlen(outbuf)],"%02X ",p[i]);
       }
-    } 
+    }
     break;
-  
   }
   printf("done low '%s'\n",outbuf);
   return 0;
