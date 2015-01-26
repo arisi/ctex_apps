@@ -11,11 +11,6 @@
 int countti=0;
 extern unsigned int _sdata,_sidata,_edata,_sbss,_ebss;
 
-void appi_task() {
-  printf("Appi-taski %d\n",countti);
-  countti+=1;
-}
-
 int appi_nRF_send(char proto,unsigned int ip,unsigned int port,char *buf) {
   nRF_q_t spac;
   spac.mac=p3_my_mac;
@@ -44,34 +39,6 @@ int appi_p3_send(char proto,unsigned int ip,unsigned int port,char *buf) {
   }
   return 0;
 }
-
-unsigned int htoin (const char *ptr, int max)
-{
-  if (!ptr)
-    return 0;
-
-  unsigned int value = 0;
-  char ch = *ptr;
-
-  while (ch == ' ' || ch == '\t')
-    ch = *(++ptr);
-
-  for (int cnt=0; cnt<max; cnt++)
-  {
-    if (ch >= '0' && ch <= '9')
-      value = (value<<4)+(ch-'0');
-    else if (ch >= 'A' && ch <= 'F')
-      value = (value<<4)+(ch-'A'+10);
-    else if (ch >= 'a' && ch <= 'f')
-      value = (value<<4)+(ch-'a'+10);
-    else
-      return value;
-    ch = *(++ptr);
-  }
-  return value;
-}
-
-
 
 int appi_do_low(char *buf, char *outbuf) {
   strcpy(outbuf,"?");
@@ -204,37 +171,6 @@ void appi_nRF_in_task(int t) {
 }
 
 
-int STM32L_write_block(unsigned int blk,char *buf,unsigned int len)
-{
-  unsigned int a=0x8000000+blk*STM32L_FLASH_BLOCK;
-  STM32L_write(a,buf,len);
-  return(0);
-}
-
-
-#ifdef CONF_TERMINAL
-int appi_terminal(int argc,char **argv)
-{
-  puts("Appitermi\n");
-  if (strcmp(argv[0],"erase")==0) {
-    unsigned int blk=htoi(argv[1]);
-    int iflash_start=0x8000000;
-    unsigned int a=iflash_start+blk*STM32L_FLASH_BLOCK;
-    printf("STM32L_erase_blockzzz (%X -> %08X)\n",blk,a);
-    STM32L_erase_block(blk);
-  } else if (strcmp(argv[0],"write")==0) {
-    unsigned int blk=htoi(argv[1]);
-    int iflash_start=0x8000000;
-    unsigned int a=iflash_start+blk*STM32L_FLASH_BLOCK;
-    printf("STM32L_write (%X -> %08X)\n",blk,a);
-    char *buf="MOIKKAS KAIKKI";
-    STM32L_write_block(blk,buf,strlen(buf));
-  }
-  return(0);
-}
-#endif
-
-
 void init_mem() {
   memcpy (&_sdata, &_sidata, (void*)&_edata-(void*)&_sdata);
   memset(&_sbss,0,(void*)&_ebss-(void*)&_sbss);
@@ -242,15 +178,10 @@ void init_mem() {
 
 int __attribute__((section("buut"))) appi(int z) {
   init_mem();
-  printf("Appi initoitu!\n");
+  printf("Appi initoitu!!\n");
 
-  sch_add_task("APP_TICK", 10000, (void*)&appi_task);
   sch_add_task("APP_P3_IN", 1000, (void*)&appi_p3_in_task);
   sch_add_task("APP_NRF_IN", 1000, (void*)&appi_nRF_in_task);
-  // return 0;
-  #ifdef CONF_TERMINAL
-  terminal_add_cmd("xx",0,(void*)&appi_terminal);
-  #endif
   return 0x123456;
 }
 
