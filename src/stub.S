@@ -4,66 +4,15 @@
   .thumb
   .section stub
 
-  .type rbuf_items,%function
-  .global rbuf_items
-  .set rbuf_items,0x8007a15
-  .type rbuf_large_pull,%function
-  .global rbuf_large_pull
-  .set rbuf_large_pull,0x8007ab5
-  .type my_fprintf,%function
-  .global my_fprintf
-  .set my_fprintf,0x8007835
-  .type my_sprintf,%function
-  .global my_sprintf
-  .set my_sprintf,0x8007859
-  .type strlen,%function
-  .global strlen
-  .set strlen,0x8009aad
   .type memcpy,%function
   .global memcpy
   .set memcpy,0x8009a79
-  .type rbuf_large_push,%function
-  .global rbuf_large_push
-  .set rbuf_large_push,0x8007d05
-  .type sch_block_task,%function
-  .global sch_block_task
-  .set sch_block_task,0x800a469
-  .type nRF_ibuf,%object
-  .global nRF_ibuf
-  .set nRF_ibuf,0x20000414
-  .type stdout,%object
-  .global stdout
-  .set stdout,0x20000260
-  .type a,%object
-  .global a
-  .set a,0x200017c4
-  .type p3_my_mac,%object
-  .global p3_my_mac
-  .set p3_my_mac,0x20000210
-  .type p3_obuf,%object
-  .global p3_obuf
-  .set p3_obuf,0x20000420
   .type memset,%function
   .global memset
   .set memset,0x8009a95
-  .type nRF_obuf,%object
-  .global nRF_obuf
-  .set nRF_obuf,0x20000418
-  .type strncpy,%function
-  .global strncpy
-  .set strncpy,0x8009ac5
-  .type htoin,%function
-  .global htoin
-  .set htoin,0x8009c45
-  .type STM32L_erase_block,%function
-  .global STM32L_erase_block
-  .set STM32L_erase_block,0x8004a3d
-  .type STM32L_write,%function
-  .global STM32L_write
-  .set STM32L_write,0x8004a79
-  .type p3_ibuf,%object
-  .global p3_ibuf
-  .set p3_ibuf,0x20000424
-  .type sch_add_task,%function
-  .global sch_add_task
-  .set sch_add_task,0x800a381
+  .type my_fprintf,%function
+  .global my_fprintf
+  .set my_fprintf,0x8007835
+  .type stdout,%object
+  .global stdout
+  .set stdout,0x20000260
